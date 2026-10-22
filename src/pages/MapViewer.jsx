@@ -6118,8 +6118,8 @@ export default function MapViewer({ publicView = false }) {
   const [showArea, setShowArea] = useState(false);
   const [showShare, setShowShare] = useState(false);
 
-  const [showStatus, setShowStatus] = useState(!hideStatus);
-
+  // const [showStatus, setShowStatus] = useState(!hideStatus);
+  const [showStatus, setShowStatus] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [optionsFor, setOptionsFor] = useState(null);
   const [deleteFor, setDeleteFor] = useState(null);
