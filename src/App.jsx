@@ -11,7 +11,8 @@ import SiteVisit from "./pages/SiteVisit";
 import CreateQuotation from "./pages/CreateQuotation";
 import QuotationDetail from "./pages/QuotationDetail";
 import MapViewer from "./pages/MapViewer";
-import { GOOGLE_MAPS_DOC_ID } from "./constants";
+// import { GOOGLE_MAPS_DOC_ID } from "./constants";
+import { isGoogleMapDoc } from "./constants";
 import GridMapViewer from "./pages/GridMapViewer";
 
 function Protected({ children, noGuest = false }) {
@@ -94,5 +95,6 @@ export default function App() {
 // Google-Maps doc → satellite MapViewer; everything else → grid viewer (same routing rule as Flutter)
 function MapRoute() {
   const { mapId } = useParams();
-  return mapId === GOOGLE_MAPS_DOC_ID ? <MapViewer /> : <GridMapViewer />;
+  // return mapId === GOOGLE_MAPS_DOC_ID ? <MapViewer /> : <GridMapViewer />;
+  return isGoogleMapDoc(mapId) ? <MapViewer /> : <GridMapViewer />;
 }

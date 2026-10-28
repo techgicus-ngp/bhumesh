@@ -2,13 +2,14 @@
 import { Map as MapIcon, LayoutGrid } from 'lucide-react';
 import { Chip } from './ui';
 import { toDate, fmtMapDate } from '../utils/format';
-import { GOOGLE_MAPS_DOC_ID } from '../constants';
-
+// import { GOOGLE_MAPS_DOC_ID } from '../constants';
+import { isGoogleMapDoc } from '../constants';
 export default function MapCard({ map, index = 0, onOpen }) {
   const plots = map.plots ?? [];
   const count = (t) => plots.filter((p) => p.type === t).length;
   const created = toDate(map.createdDate) ?? new Date();
-  const isGrid = map.id !== GOOGLE_MAPS_DOC_ID;
+  // const isGrid = map.id !== GOOGLE_MAPS_DOC_ID;
+  const isGrid = !isGoogleMapDoc(map.id);
   return (
     <div className="card" style={{ animationDelay: `${index * 40}ms` }} onClick={() => onOpen(map)}>
       <div className="row">
