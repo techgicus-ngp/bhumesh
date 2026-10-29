@@ -12344,17 +12344,25 @@ export default function MapViewer({ publicView = false }) {
           padding-bottom: 2px;
         }
         .ref-chips-row::-webkit-scrollbar { display: none; }
-        .ref-pill {
+       .ref-pill {
           font: 500 12px/1 ${MONO};
           color: ${INK};
           background: ${PANEL};
           border: 1px solid ${HAIR};
           border-radius: 999px;
-          padding: 9px 13px;
+          padding: 8px 14px;
           cursor: pointer;
           white-space: nowrap;
           box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
           transition: all 150ms ease;
+          
+          /* ── Added Fixes for Mobile Overlap ── */
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;         /* Prevents the pill from squishing */
+          min-height: 32px;       /* Ensures consistent height */
+          box-sizing: border-box; /* Keeps padding inside the width */
         }
         .ref-pill:hover {
           border-color: ${ACCENT};
@@ -12364,6 +12372,67 @@ export default function MapViewer({ publicView = false }) {
           background: ${ACCENT};
           border-color: ${ACCENT};
           font-weight: 700;
+        }
+          @media (max-width: 768px) {
+          /* ── Make Top HUD Ultra-Compact ── */
+          .ref-hud-top {
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            gap: 6px;
+          }
+          .ref-topbar {
+            padding: 8px 10px;
+            gap: 8px;
+            border-radius: 12px;
+          }
+          .ref-icon-btn {
+            width: 36px;
+            height: 36px;
+          }
+          /* Hide Title & Eyebrow on mobile to save vertical space */
+          .ref-topbar > div:nth-child(2) {
+            display: none;
+          }
+          .ref-search {
+            padding: 0 10px;
+            height: 36px;
+          }
+          .ref-search input {
+            font-size: 14px;
+          }
+          .ref-find-btn {
+            padding: 5px 10px;
+          }
+
+          /* ── Transform Legend into a Horizontal Bottom Bar ── */
+          .mv-status-legend {
+            left: 8px !important;
+            right: 8px !important;
+            bottom: 8px !important;
+            max-width: none !important;
+            width: calc(100vw - 16px) !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            padding: 8px 12px !important;
+            border-radius: 10px !important;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+          }
+          .mv-status-legend::-webkit-scrollbar {
+            display: none;
+          }
+          .mv-status-item {
+            flex-shrink: 0; /* Keep items on one line */
+          }
+
+          /* ── Nudge Bottom-Right Toggles & Zoom Controls Up ── */
+          .mv-bottom-right-controls {
+            bottom: 60px !important;
+            right: 8px !important;
+            transform: scale(0.9);
+            transform-origin: bottom right;
+          }
         }
       `}</style>
 
