@@ -5494,3 +5494,20 @@ canvas {
   box-shadow: var(--maps-blue-shadow);
   font-size: 13.5px;
 }
+
+
+
+
+
+.btn.map-card__brochure {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #fff;
+  color: #4f46e5;
+  border: 1.5px solid #c7d2fe;
+  box-shadow: none;
+}
+.btn.map-card__brochure:hover { background: #eef2ff; }

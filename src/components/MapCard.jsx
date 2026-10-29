@@ -244,19 +244,90 @@
 
 
 
+// // Map card used by the Maps tab (EmployeeHome and GuestHome).
+// // All styling is in index.css (.map-card …); only the staggered animation delay is inline.
+// import { Map as MapIcon, LayoutGrid, ArrowUpRight } from 'lucide-react';
+// import { toDate, fmtMapDate } from '../utils/format';
+// import { isGoogleMapDoc } from '../constants';
+
+// export default function MapCard({ map, index = 0, onOpen }) {
+//   const plots = map.plots ?? [];
+//   const count = (type) => plots.filter((plot) => plot.type === type).length;
+
+//   const created = toDate(map.createdDate) ?? new Date();
+//   const isGrid = !isGoogleMapDoc(map.id);
+//   const Icon = isGrid ? LayoutGrid : MapIcon;
+
+//   const stats = [
+//     ['plots', count('plot'), 'Plots'],
+//     ['roads', count('road'), 'Roads'],
+//     ['spaces', count('open_space'), 'Spaces'],
+//   ];
+
+//   return (
+//     <article
+//       className="card map-card"
+//       style={{ animationDelay: `${index * 40}ms` }}
+//       onClick={() => onOpen(map)}
+//     >
+//       <div className="map-card__head">
+//         <div className="map-card__text">
+//           <span className="map-card__eyebrow">{isGrid ? 'Plot layout' : 'Google map'}</span>
+//           <h4 className="map-card__title">{map.name || 'Unnamed Map'}</h4>
+//           <div className="sub map-card__date">Created {fmtMapDate(created)}</div>
+//         </div>
+
+//         <div className="map-card__icon" aria-hidden="true">
+//           <Icon size={22} strokeWidth={1.9} />
+//         </div>
+//       </div>
+
+//       <div className="map-card__stats">
+//         {stats.map(([tone, value, label]) => (
+//           <div key={tone} className={`map-card__stat map-card__stat--${tone}`}>
+//             <strong>{value}</strong>
+//             <span>{label}</span>
+//           </div>
+//         ))}
+//       </div>
+
+//       {/* stopPropagation: the card is clickable too, so don't open twice */}
+//       <button
+//         type="button"
+//         className="btn full map-card__action"
+//         onClick={(e) => {
+//           e.stopPropagation();
+//           onOpen(map);
+//         }}
+//       >
+//         {isGrid ? 'Open Plot Grid' : 'Open Map'}
+//         <ArrowUpRight size={16} />
+//       </button>
+//     </article>
+//   );
+// }
+
+
+// src/components/MapCard.jsx
 // Map card used by the Maps tab (EmployeeHome and GuestHome).
 // All styling is in index.css (.map-card …); only the staggered animation delay is inline.
-import { Map as MapIcon, LayoutGrid, ArrowUpRight } from 'lucide-react';
+import { useState } from 'react';
+import { Map as MapIcon, LayoutGrid, ArrowUpRight, Eye } from 'lucide-react';
 import { toDate, fmtMapDate } from '../utils/format';
 import { isGoogleMapDoc } from '../constants';
+import { getBrochure } from '../brochures';
+import BrochurePreview from './BrochurePreview';
 
 export default function MapCard({ map, index = 0, onOpen }) {
+  const [showBrochure, setShowBrochure] = useState(false);
+
   const plots = map.plots ?? [];
   const count = (type) => plots.filter((plot) => plot.type === type).length;
 
   const created = toDate(map.createdDate) ?? new Date();
   const isGrid = !isGoogleMapDoc(map.id);
   const Icon = isGrid ? LayoutGrid : MapIcon;
+  const brochure = getBrochure(map); // null when this map has no brochure
 
   const stats = [
     ['plots', count('plot'), 'Plots'],
@@ -265,44 +336,68 @@ export default function MapCard({ map, index = 0, onOpen }) {
   ];
 
   return (
-    <article
-      className="card map-card"
-      style={{ animationDelay: `${index * 40}ms` }}
-      onClick={() => onOpen(map)}
-    >
-      <div className="map-card__head">
-        <div className="map-card__text">
-          <span className="map-card__eyebrow">{isGrid ? 'Plot layout' : 'Google map'}</span>
-          <h4 className="map-card__title">{map.name || 'Unnamed Map'}</h4>
-          <div className="sub map-card__date">Created {fmtMapDate(created)}</div>
-        </div>
-
-        <div className="map-card__icon" aria-hidden="true">
-          <Icon size={22} strokeWidth={1.9} />
-        </div>
-      </div>
-
-      <div className="map-card__stats">
-        {stats.map(([tone, value, label]) => (
-          <div key={tone} className={`map-card__stat map-card__stat--${tone}`}>
-            <strong>{value}</strong>
-            <span>{label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* stopPropagation: the card is clickable too, so don't open twice */}
-      <button
-        type="button"
-        className="btn full map-card__action"
-        onClick={(e) => {
-          e.stopPropagation();
-          onOpen(map);
-        }}
+    <>
+      <article
+        className="card map-card"
+        style={{ animationDelay: `${index * 40}ms` }}
+        onClick={() => onOpen(map)}
       >
-        {isGrid ? 'Open Plot Grid' : 'Open Map'}
-        <ArrowUpRight size={16} />
-      </button>
-    </article>
+        <div className="map-card__head">
+          <div className="map-card__text">
+            <span className="map-card__eyebrow">{isGrid ? 'Plot layout' : 'Google map'}</span>
+            <h4 className="map-card__title">{map.name || 'Unnamed Map'}</h4>
+            <div className="sub map-card__date">Created {fmtMapDate(created)}</div>
+          </div>
+
+          <div className="map-card__icon" aria-hidden="true">
+            <Icon size={22} strokeWidth={1.9} />
+          </div>
+        </div>
+
+        <div className="map-card__stats">
+          {stats.map(([tone, value, label]) => (
+            <div key={tone} className={`map-card__stat map-card__stat--${tone}`}>
+              <strong>{value}</strong>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* stopPropagation: the card is clickable too, so don't open twice */}
+        <button
+          type="button"
+          className="btn full map-card__action"
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpen(map);
+          }}
+        >
+          {isGrid ? 'Open Plot Grid' : 'Open Map'}
+          <ArrowUpRight size={16} />
+        </button>
+
+        {/* Only shown for maps that have a brochure (see src/brochures.js) */}
+        {brochure && (
+          <button
+            type="button"
+            className="btn full map-card__brochure"
+            onClick={(e) => {
+              e.stopPropagation(); // don't also open the map
+              setShowBrochure(true);
+            }}
+          >
+            <Eye size={16} /> View Brochure
+          </button>
+        )}
+      </article>
+
+      {showBrochure && brochure && (
+        <BrochurePreview
+          brochure={brochure}
+          title={map.name}
+          onClose={() => setShowBrochure(false)}
+        />
+      )}
+    </>
   );
 }
