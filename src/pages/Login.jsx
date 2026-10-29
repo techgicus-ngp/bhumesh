@@ -42,7 +42,19 @@ export default function Login() {
     <div className="auth-bg">
       <div style={{ width: "100%", maxWidth: 420 }}>
         <div className="auth-title">
-          <div className="logo-badge" />
+          {/* <div className="logo-badge" /> */}
+          <div className="logo-badge">
+  <img
+    src="/logo.png"
+    alt="Bhumesh Realtors Logo"
+    style={{
+      width: "100%",
+      height: "100%",
+      objectFit: "contain",
+      borderRadius: "50%",
+    }}
+  />
+</div>
           <h1>Bhumesh Realtors</h1>
           <p>Real Estate Management</p>
         </div>

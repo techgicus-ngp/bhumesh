@@ -2244,7 +2244,12 @@ textarea {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: #fff url("/logo.jpg") center/cover;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 8px;
   margin: 0 auto 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
