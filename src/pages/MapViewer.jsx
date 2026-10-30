@@ -2471,11 +2471,6 @@
 //   );
 // }
 
-
-
-
-
-
 // import React, {
 //   memo,
 //   useCallback,
@@ -5185,9 +5180,6 @@
 //     </div>
 //   );
 // }
-
-
-
 
 // import React, {
 //   memo,
@@ -7914,9 +7906,6 @@
 //     </div>
 //   );
 // }
-
-
-
 
 // import React, {
 //   memo,
@@ -10680,8 +10669,6 @@
 //   );
 // }
 
-
-
 import React, {
   memo,
   useCallback,
@@ -10712,6 +10699,7 @@ import {
   Share2,
   Copy,
   MessageCircle,
+  Download,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { isAdmin } from "../models/user";
@@ -10726,6 +10714,8 @@ import { Spinner } from "../components/ui";
 import Modal from "../components/Modal";
 import PlotViewSheet from "../components/PlotViewSheet";
 import { useToast } from "../components/Toast";
+import { getBrochure } from "../brochures";
+import BrochurePreview from "../components/BrochurePreview";
 
 /* ── Reference Architectural Theme Tokens ──────────────────────────── */
 const CANVAS = "rgba(21, 24, 29, 0.90)";
@@ -10790,9 +10780,9 @@ function styleForFeature(p) {
   if (p.type === "road") {
     return {
       fill: ROAD_AND_BG_COLOR, // Solid cement color matching background
-      stroke: "none",          // Removed road border
+      stroke: "none", // Removed road border
       ink: "#E7E1D5",
-      sw: 0,                   // Zero border width
+      sw: 0, // Zero border width
     };
   }
   if (isAmenity(p)) {
@@ -11053,7 +11043,12 @@ function placeRoadLabels(roads, plots) {
   });
   const onPlot = (x, y) =>
     plotIndex.some(
-      (p) => x >= p.x0 && x <= p.x1 && y >= p.y0 && y <= p.y1 && pointInPoly(x, y, p.pts),
+      (p) =>
+        x >= p.x0 &&
+        x <= p.x1 &&
+        y >= p.y0 &&
+        y <= p.y1 &&
+        pointInPoly(x, y, p.pts),
     );
 
   // Prepare each road: axis, polygon in (u along, v across) coordinates, widths along it
@@ -11079,7 +11074,8 @@ function placeRoadLabels(roads, plots) {
       for (let i = 0; i < uv.length; i++) {
         const [u1, v1] = uv[i];
         const [u2, v2] = uv[(i + 1) % uv.length];
-        if (u1 !== u2 && (u1 <= u) !== (u2 <= u)) vs.push(v1 + ((u - u1) * (v2 - v1)) / (u2 - u1));
+        if (u1 !== u2 && u1 <= u !== u2 <= u)
+          vs.push(v1 + ((u - u1) * (v2 - v1)) / (u2 - u1));
       }
       vs.sort((a, b) => a - b);
       let best = null;
@@ -11127,7 +11123,13 @@ function placeRoadLabels(roads, plots) {
           for (let j = 0; j <= 2; j++) {
             const u = -len / 2 + (len * i) / 8;
             const v = -(hgt + 0.5) / 2 + ((hgt + 0.5) * j) / 2;
-            if (!pointInPoly(cx + u * Math.cos(ang) - v * Math.sin(ang), cy + u * Math.sin(ang) + v * Math.cos(ang), r.pts)) {
+            if (
+              !pointInPoly(
+                cx + u * Math.cos(ang) - v * Math.sin(ang),
+                cy + u * Math.sin(ang) + v * Math.cos(ang),
+                r.pts,
+              )
+            ) {
               inside = false;
               break;
             }
@@ -11141,7 +11143,12 @@ function placeRoadLabels(roads, plots) {
           for (let j = 0; j <= 2; j++) {
             const u = -len / 2 + (len * i) / 8;
             const v = -(hgt + 0.5) / 2 + ((hgt + 0.5) * j) / 2;
-            if (onPlot(cx + u * Math.cos(ang) - v * Math.sin(ang), cy + u * Math.sin(ang) + v * Math.cos(ang))) {
+            if (
+              onPlot(
+                cx + u * Math.cos(ang) - v * Math.sin(ang),
+                cy + u * Math.sin(ang) + v * Math.cos(ang),
+              )
+            ) {
               hitsPlot = true;
               break;
             }
@@ -11383,9 +11390,7 @@ const MasterplanSvgContent = memo(function MasterplanSvgContent({
 }) {
   const selectedFeature = useMemo(
     () =>
-      highlightKey
-        ? layout.features.find((f) => f.key === highlightKey)
-        : null,
+      highlightKey ? layout.features.find((f) => f.key === highlightKey) : null,
     [layout, highlightKey],
   );
 
@@ -11412,11 +11417,7 @@ const MasterplanSvgContent = memo(function MasterplanSvgContent({
           const isRoad = f.raw.type === "road";
           const st = styleForFeature(f.raw);
           // Roads stay 100% opaque so they blend seamlessly with the background
-          const baseAlpha = isRoad
-            ? 1
-            : highlightKey && !isSel
-              ? 0.52
-              : 0.96;
+          const baseAlpha = isRoad ? 1 : highlightKey && !isSel ? 0.52 : 0.96;
           const alpha = opacityFor(f.raw, baseAlpha);
 
           return (
@@ -11601,6 +11602,7 @@ export default function MapViewer({ publicView = false }) {
   const [advMatch, setAdvMatch] = useState(new Set());
   const [showArea, setShowArea] = useState(false);
   const [showShare, setShowShare] = useState(false);
+  const [showBrochurePreview, setShowBrochurePreview] = useState(false);
 
   // const [showStatus, setShowStatus] = useState(!hideStatus);
   const [showStatus, setShowStatus] = useState(false);
@@ -11648,6 +11650,13 @@ export default function MapViewer({ publicView = false }) {
       .share({ title: shareText, text: shareText, url: shareUrl })
       .catch(() => {});
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${shareText}\n${shareUrl}`)}`;
+
+  const brochure = useMemo(() => getBrochure(mapDoc), [mapDoc]);
+
+const closeBrochurePreview = useCallback(
+  () => setShowBrochurePreview(false),
+  [],
+);
 
   const statuses = useMemo(
     () =>
@@ -11735,9 +11744,16 @@ export default function MapViewer({ publicView = false }) {
     // One clear, aligned label per road: no junction pile-ups, nothing over plots or other labels
     const roadLabels = placeRoadLabels(
       features
-        .map((f, i) => ({ key: i, pts: f.pts, label: f.label, type: f.raw.type }))
+        .map((f, i) => ({
+          key: i,
+          pts: f.pts,
+          label: f.label,
+          type: f.raw.type,
+        }))
         .filter((f) => f.type === "road"),
-      features.filter((f) => f.raw.type === "plot").map((f) => ({ pts: f.pts })),
+      features
+        .filter((f) => f.raw.type === "plot")
+        .map((f) => ({ pts: f.pts })),
     );
     features.forEach((f, i) => {
       f.roadLabel = roadLabels.get(i) || null;
@@ -12633,15 +12649,18 @@ export default function MapViewer({ publicView = false }) {
             >
               <Info size={17} />
             </button>
-
-            <button
-              className="ref-icon-btn"
-              title="Share"
-              onClick={() => setShowShare(true)}
-            >
-              <Share2 size={17} />
-            </button>
-
+     {brochure && (
+  <button
+    className="ref-icon-btn"
+    type="button"
+    title="View brochure PDF"
+    aria-label="View brochure PDF"
+    onClick={() => setShowBrochurePreview(true)}
+  >
+    <Download size={17} />
+  </button>
+)}
+    
             {isAdmin(user) && (
               <button
                 className={`ref-icon-btn ${editMode ? "active" : ""}`}
@@ -13188,7 +13207,12 @@ export default function MapViewer({ publicView = false }) {
         >
           {[
             [PLAIN_FILL, "Available", countStatus("available"), null],
-            [PLAIN_FILL, "Booked", countStatus("booked"), NUMBER_RING_COLORS.booked],
+            [
+              PLAIN_FILL,
+              "Booked",
+              countStatus("booked"),
+              NUMBER_RING_COLORS.booked,
+            ],
             [PLAIN_FILL, "Sold", countStatus("sold"), NUMBER_RING_COLORS.sold],
             ["#2E7D32", "Open Space", count("open_space"), null],
             ["#D9468F", "Amenity", null, null],
@@ -13248,58 +13272,58 @@ export default function MapViewer({ publicView = false }) {
           gap: 8,
         }}
       >
-        {[
-          ...(hideStatus ? [] : [["Status", showStatus, setShowStatus]]),
-        ].map(([label, on, toggle]) => (
-          <button
-            key={label}
-            type="button"
-            role="switch"
-            aria-checked={on}
-            onClick={() => toggle(!on)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              font: `500 13px/1 ${MONO}`,
-              color: INK,
-              background: PANEL,
-              backdropFilter: "blur(14px)",
-              WebkitBackdropFilter: "blur(14px)",
-              border: `1px solid ${HAIR}`,
-              borderRadius: 12,
-              padding: "9px 13px",
-              cursor: "pointer",
-              boxShadow: "0 10px 28px rgba(0, 0, 0, 0.35)",
-            }}
-          >
-            <span>{label}</span>
-            <span
+        {[...(hideStatus ? [] : [["Status", showStatus, setShowStatus]])].map(
+          ([label, on, toggle]) => (
+            <button
+              key={label}
+              type="button"
+              role="switch"
+              aria-checked={on}
+              onClick={() => toggle(!on)}
               style={{
-                width: 42,
-                height: 22,
-                borderRadius: 999,
-                background: on ? "#7CB342" : "rgba(255, 255, 255, 0.20)",
-                position: "relative",
-                transition: "background 180ms ease",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                font: `500 13px/1 ${MONO}`,
+                color: INK,
+                background: PANEL,
+                backdropFilter: "blur(14px)",
+                WebkitBackdropFilter: "blur(14px)",
+                border: `1px solid ${HAIR}`,
+                borderRadius: 12,
+                padding: "9px 13px",
+                cursor: "pointer",
+                boxShadow: "0 10px 28px rgba(0, 0, 0, 0.35)",
               }}
             >
+              <span>{label}</span>
               <span
                 style={{
-                  position: "absolute",
-                  top: 2,
-                  left: 2,
-                  width: 18,
-                  height: 18,
-                  borderRadius: "50%",
-                  background: "#FFFFFF",
-                  transform: on ? "translateX(20px)" : "translateX(0px)",
-                  transition: "transform 180ms ease",
+                  width: 42,
+                  height: 22,
+                  borderRadius: 999,
+                  background: on ? "#7CB342" : "rgba(255, 255, 255, 0.20)",
+                  position: "relative",
+                  transition: "background 180ms ease",
                 }}
-              />
-            </span>
-          </button>
-        ))}
+              >
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 2,
+                    left: 2,
+                    width: 18,
+                    height: 18,
+                    borderRadius: "50%",
+                    background: "#FFFFFF",
+                    transform: on ? "translateX(20px)" : "translateX(0px)",
+                    transition: "transform 180ms ease",
+                  }}
+                />
+              </span>
+            </button>
+          ),
+        )}
       </div>
 
       {/* ── Selected Plot Inspector Sheet ── */}
@@ -13461,9 +13485,17 @@ export default function MapViewer({ publicView = false }) {
                 <Share2 size={15} /> More…
               </button>
             )}
+            
           </div>
         </Modal>
       )}
+      {showBrochurePreview && brochure && (
+  <BrochurePreview
+    brochure={brochure}
+    title={mapDoc?.name || "Layout brochure"}
+    onClose={closeBrochurePreview}
+  />
+)}
     </div>
   );
 }
