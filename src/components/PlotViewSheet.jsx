@@ -123,6 +123,7 @@ import {
   MapPin,
   ChevronDown,
   StickyNote,
+  ShieldCheck,
 } from "lucide-react";
 import { statusColor } from "../models/plot";
 import { isGuest } from "../models/user";
@@ -186,7 +187,7 @@ const Tile = ({ icon: Icon, title, value, sub }) => (
 export default function PlotViewSheet({ plot, mapId, mapName, user, onClose }) {
   const nav = useNavigate();
   const c = statusColor(plot.status);
-
+console.log(plot)
   return (
     <div
       role="dialog"
@@ -334,7 +335,18 @@ export default function PlotViewSheet({ plot, mapId, mapName, user, onClose }) {
             value={plot.facing || "—"}
           />
         </div>
-
+           <Tile
+            icon={Compass}
+            title="Facing"
+            value={plot.facing || "—"}
+          />
+          {plot.type === "plot" && (
+            <Tile
+              icon={ShieldCheck}
+              title="RL Status"
+              value={plot.rlStatus || "—"}
+            />
+          )}
         {/* Center Coordinates */}
         <div
           style={{

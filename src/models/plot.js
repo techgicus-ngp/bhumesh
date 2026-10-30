@@ -1,6 +1,14 @@
 // models/plot_data.dart  (LatLng → {lat, lng})
 export const SQM_TO_SQFT = 10.7639;
 
+/** Allowed values for the RL Status dropdown (same as PlotData.rlStatusOptions in Flutter). */
+export const RL_STATUS_OPTIONS = ['Pending', 'Approved'];
+
+/** Any stored value (null, 'pending', 'APPROVED' …) → 'Pending' | 'Approved'. */
+export const normalizeRlStatus = (v) =>
+  String(v ?? '').trim().toLowerCase() === 'approved' ? 'Approved' : 'Pending';
+
+
 export function plotFromDoc(data, id) {
   const areaSqM = Number(data.area) || 0;
   return {
@@ -22,6 +30,7 @@ export function plotFromDoc(data, id) {
     type: data.type ?? 'plot',
     firestoreId: id ?? null,
     facing: data.facing ?? 'North',
+    rlStatus: normalizeRlStatus(data.rlStatus),
   };
 }
 
@@ -44,6 +53,7 @@ export function plotToMap(p) {
     notes: p.notes,
     type: p.type,
     facing: p.facing,
+   rlStatus: normalizeRlStatus(p.rlStatus),
   };
 }
 
