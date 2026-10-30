@@ -11605,7 +11605,7 @@ export default function MapViewer({ publicView = false }) {
   const [showBrochurePreview, setShowBrochurePreview] = useState(false);
 
   // const [showStatus, setShowStatus] = useState(!hideStatus);
-  const [showStatus, setShowStatus] = useState(false);
+  const [showStatus, setShowStatus] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [optionsFor, setOptionsFor] = useState(null);
   const [deleteFor, setDeleteFor] = useState(null);
