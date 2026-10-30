@@ -5511,3 +5511,21 @@ canvas {
   box-shadow: none;
 }
 .btn.map-card__brochure:hover { background: #eef2ff; }
+
+
+
+
+/* Responsive fixes: must stay at the END of the file */
+@media (max-width: 767px) {
+  .appbar { gap: 6px; min-height: 54px; padding: 7px 10px; }
+  .appbar h1 { font-size: 16px; }
+  .appbar-actions { gap: 2px; }
+  .searchbar { border-radius: 12px; }
+  .searchbar input { font-size: 16px; } /* stops iOS Safari zooming on focus */
+  .stat-pill { padding: 10px 8px; border-radius: 12px; }
+  .stat-pill span { font-size: 11px; }
+  .empty { padding: 34px 12px; }
+}
+@media (max-width: 380px) { .stat-pill b { font-size: 15px; } }
+@media (min-width: 600px)  { .plot-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .plot-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); } }

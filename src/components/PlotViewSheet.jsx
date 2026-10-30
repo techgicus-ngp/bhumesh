@@ -114,6 +114,413 @@
 
 
 // widgets/plot_view_sheet.dart — Architectural Dark-Glass Plot Inspector Sheet
+// import { useNavigate } from "react-router-dom";
+// import {
+//   FileText,
+//   X,
+//   Compass,
+//   Maximize2,
+//   MapPin,
+//   ChevronDown,
+//   StickyNote,
+//   ShieldCheck,
+// } from "lucide-react";
+// import { statusColor } from "../models/plot";
+// import { isGuest } from "../models/user";
+// import { capitalize } from "../utils/format";
+
+// const CANVAS = "rgba(21, 24, 29, 0.94)";
+// const HAIR = "rgba(231, 225, 213, 0.14)";
+// const ACCENT = "#D4AF37";
+// const INK = "#E7E1D5";
+// const MUTED = "#9AA5B1";
+// const SANS = "'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
+// const MONO = "'JetBrains Mono', 'SF Mono', Consolas, monospace";
+
+// const Tile = ({ icon: Icon, title, value, sub }) => (
+//   <div
+//     style={{
+//       flex: 1,
+//       minWidth: 105,
+//       background: "rgba(255, 255, 255, 0.03)",
+//       border: `1px solid ${HAIR}`,
+//       borderRadius: 12,
+//       padding: "12px 13px",
+//       display: "flex",
+//       flexDirection: "column",
+//       gap: 4,
+//     }}
+//   >
+//     <div
+//       style={{
+//         display: "flex",
+//         alignItems: "center",
+//         gap: 5,
+//         fontSize: 10.5,
+//         fontWeight: 600,
+//         letterSpacing: "0.06em",
+//         textTransform: "uppercase",
+//         color: MUTED,
+//       }}
+//     >
+//       {Icon && <Icon size={12} color={ACCENT} />}
+//       {title}
+//     </div>
+//     <div
+//       style={{
+//         fontFamily: MONO,
+//         fontSize: 15,
+//         fontWeight: 700,
+//         color: INK,
+//       }}
+//     >
+//       {value}
+//     </div>
+//     {sub && (
+//       <div style={{ fontFamily: MONO, fontSize: 11.5, color: MUTED }}>
+//         {sub}
+//       </div>
+//     )}
+//   </div>
+// );
+
+// export default function PlotViewSheet({ plot, mapId, mapName, user, onClose }) {
+//   const nav = useNavigate();
+//   const c = statusColor(plot.status);
+// console.log(plot)
+//   return (
+//     <div
+//       role="dialog"
+//       aria-label="Plot details"
+//       onPointerDown={(e) => e.stopPropagation()}
+//       style={{
+//         position: "fixed",
+//         right: 16,
+//         bottom: 16,
+//         zIndex: 30,
+//         width: 390,
+//         maxWidth: "calc(100vw - 32px)",
+//         maxHeight: "calc(100vh - 48px)",
+//         display: "flex",
+//         flexDirection: "column",
+//         background: CANVAS,
+//         backdropFilter: "blur(20px)",
+//         WebkitBackdropFilter: "blur(20px)",
+//         border: `1px solid ${HAIR}`,
+//         borderRadius: 16,
+//         boxShadow: "0 24px 60px rgba(0, 0, 0, 0.65)",
+//         color: INK,
+//         fontFamily: SANS,
+//         overflow: "hidden",
+//         animation: "pvsSlideUp 200ms cubic-bezier(0.16, 1, 0.3, 1)",
+//       }}
+//     >
+//       <style>{`
+//         @keyframes pvsSlideUp {
+//           from { opacity: 0; transform: translateY(14px); }
+//           to { opacity: 1; transform: translateY(0); }
+//         }
+//         @media (max-width: 640px) {
+//           div[aria-label="Plot details"] {
+//             left: 10px !important;
+//             right: 10px !important;
+//             bottom: 10px !important;
+//             width: auto !important;
+//             max-width: none !important;
+//           }
+//         }
+//       `}</style>
+
+//       {/* Header */}
+//       <div
+//         style={{
+//           display: "flex",
+//           justifyContent: "space-between",
+//           alignItems: "flex-start",
+//           padding: "16px 18px 14px",
+//           borderBottom: `1px solid ${HAIR}`,
+//         }}
+//       >
+//         <div>
+//           <div
+//             style={{
+//               fontFamily: MONO,
+//               fontSize: 11,
+//               fontWeight: 600,
+//               letterSpacing: "0.08em",
+//               textTransform: "uppercase",
+//               color: ACCENT,
+//               marginBottom: 4,
+//             }}
+//           >
+//             {capitalize(plot.type)}
+//           </div>
+//           <h3
+//             style={{
+//               margin: 0,
+//               fontSize: 20,
+//               fontWeight: 800,
+//               letterSpacing: "-0.02em",
+//               color: INK,
+//             }}
+//           >
+//             {plot.type === "plot" ? `Plot ${plot.plotNo}` : plot.title}
+//           </h3>
+//         </div>
+
+//         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+//           {plot.status && (
+//             <span
+//               style={{
+//                 fontFamily: MONO,
+//                 fontSize: 11.5,
+//                 fontWeight: 700,
+//                 textTransform: "uppercase",
+//                 letterSpacing: "0.04em",
+//                 color: c,
+//                 border: `1px solid ${c}`,
+//                 background: `${c}22`,
+//                 padding: "5px 10px",
+//                 borderRadius: 999,
+//               }}
+//             >
+//               {plot.status}
+//             </span>
+//           )}
+//           <button
+//             onClick={onClose}
+//             aria-label="Close"
+//             style={{
+//               width: 32,
+//               height: 32,
+//               borderRadius: 8,
+//               background: "rgba(255, 255, 255, 0.04)",
+//               border: `1px solid ${HAIR}`,
+//               color: MUTED,
+//               display: "grid",
+//               placeItems: "center",
+//               cursor: "pointer",
+//             }}
+//           >
+//             <X size={16} />
+//           </button>
+//         </div>
+//       </div>
+
+//       {/* Body */}
+//       <div
+//         style={{
+//           padding: "16px 18px",
+//           overflowY: "auto",
+//           display: "flex",
+//           flexDirection: "column",
+//           gap: 14,
+//         }}
+//       >
+//         {/* Key Metric Tiles */}
+//         <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+//           <Tile
+//             icon={Maximize2}
+//             title="Area"
+//             value={`${plot.area.toFixed(0)} sq.m`}
+//             sub={`${plot.areaSqFt.toFixed(0)} sq.ft`}
+//           />
+//           <Tile
+//             title="Dimensions"
+//             value={plot.dimensions || "Standard"}
+//           />
+//           <Tile
+//             icon={Compass}
+//             title="Facing"
+//             value={plot.facing || "—"}
+//           />
+//         </div>
+//            <Tile
+//             icon={Compass}
+//             title="Facing"
+//             value={plot.facing || "—"}
+//           />
+//           {plot.type === "plot" && (
+//             <Tile
+//               icon={ShieldCheck}
+//               title="RL Status"
+//               value={plot.rlStatus || "—"}
+//             />
+//           )}
+//         {/* Center Coordinates */}
+//         <div
+//           style={{
+//             background: "rgba(255, 255, 255, 0.025)",
+//             border: `1px solid ${HAIR}`,
+//             borderRadius: 11,
+//             padding: "11px 13px",
+//             fontSize: 12.5,
+//             display: "flex",
+//             alignItems: "center",
+//             justifyContent: "space-between",
+//             gap: 10,
+//           }}
+//         >
+//           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+//             <MapPin size={15} color={ACCENT} />
+//             <span style={{ color: MUTED, fontWeight: 600 }}>
+//               Center Coordinates
+//             </span>
+//           </div>
+//           <span style={{ fontFamily: MONO, fontSize: 11.5, color: INK }}>
+//             {plot.center.lat.toFixed(6)}, {plot.center.lng.toFixed(6)}
+//           </span>
+//         </div>
+
+//         {/* Notes */}
+//         {plot.notes && (
+//           <div
+//             style={{
+//               background: "rgba(212, 175, 55, 0.10)",
+//               border: `1px solid rgba(212, 175, 55, 0.35)`,
+//               padding: "12px 14px",
+//               borderRadius: 11,
+//               fontSize: 13,
+//               color: INK,
+//             }}
+//           >
+//             <div
+//               style={{
+//                 display: "flex",
+//                 alignItems: "center",
+//                 gap: 6,
+//                 fontSize: 11,
+//                 fontWeight: 700,
+//                 textTransform: "uppercase",
+//                 letterSpacing: "0.06em",
+//                 color: ACCENT,
+//                 marginBottom: 4,
+//               }}
+//             >
+//               <StickyNote size={13} /> Notes
+//             </div>
+//             {plot.notes}
+//           </div>
+//         )}
+
+//         {/* Collapsible Corner Coordinates */}
+//         <details
+//           style={{
+//             background: "rgba(255, 255, 255, 0.02)",
+//             border: `1px solid ${HAIR}`,
+//             borderRadius: 11,
+//             padding: "10px 13px",
+//           }}
+//         >
+//           <summary
+//             style={{
+//               cursor: "pointer",
+//               fontWeight: 600,
+//               fontSize: 12.5,
+//               color: MUTED,
+//               display: "flex",
+//               alignItems: "center",
+//               justifyContent: "space-between",
+//               listStyle: "none",
+//             }}
+//           >
+//             <span>Corner Points ({plot.corners.length})</span>
+//             <ChevronDown size={14} />
+//           </summary>
+//           <div
+//             style={{
+//               marginTop: 10,
+//               paddingTop: 8,
+//               borderTop: `1px solid ${HAIR}`,
+//               display: "grid",
+//               gap: 5,
+//               maxHeight: 130,
+//               overflowY: "auto",
+//             }}
+//           >
+//             {plot.corners.map((p, i) => (
+//               <div
+//                 key={i}
+//                 style={{
+//                   fontFamily: MONO,
+//                   fontSize: 11.5,
+//                   color: MUTED,
+//                   display: "flex",
+//                   justifyContent: "space-between",
+//                 }}
+//               >
+//                 <span style={{ color: ACCENT }}>#{i + 1}</span>
+//                 <span>
+//                   Lat: {p.lat.toFixed(6)} · Lng: {p.lng.toFixed(6)}
+//                 </span>
+//               </div>
+//             ))}
+//           </div>
+//         </details>
+//       </div>
+
+//       {/* Footer Actions */}
+//       <div
+//         style={{
+//           display: "flex",
+//           gap: 10,
+//           padding: "12px 18px 16px",
+//           borderTop: `1px solid ${HAIR}`,
+//         }}
+//       >
+//         <button
+//           type="button"
+//           onClick={onClose}
+//           style={{
+//             flex: 1,
+//             font: `500 13px/1 ${MONO}`,
+//             color: INK,
+//             background: "transparent",
+//             border: `1px solid ${HAIR}`,
+//             borderRadius: 10,
+//             padding: "12px 14px",
+//             cursor: "pointer",
+//           }}
+//         >
+//           Close
+//         </button>
+
+//         {plot.type === "plot" && !isGuest(user) && (
+//           <button
+//             type="button"
+//             onClick={() =>
+//               nav("/quotations/new", { state: { plot, mapId, mapName } })
+//             }
+//             style={{
+//               flex: 1.8,
+//               display: "inline-flex",
+//               alignItems: "center",
+//               justifyContent: "center",
+//               gap: 8,
+//               font: `600 13px/1 ${MONO}`,
+//               color: "#15181D",
+//               background: ACCENT,
+//               border: `1px solid ${ACCENT}`,
+//               borderRadius: 10,
+//               padding: "12px 16px",
+//               cursor: "pointer",
+//             }}
+//           >
+//             <FileText size={15} /> Generate Quotation
+//           </button>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+// widgets/plot_view_sheet.dart — Architectural Dark-Glass Plot Inspector Sheet
+// Desktop: full sheet. Mobile (≤ 640px): compact bar (plot no. + status + expand arrow);
+// tap the bar or the arrow to open the full details, tap the arrow again to collapse.
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FileText,
@@ -122,6 +529,7 @@ import {
   Maximize2,
   MapPin,
   ChevronDown,
+  ChevronUp,
   StickyNote,
   ShieldCheck,
 } from "lucide-react";
@@ -137,13 +545,33 @@ const MUTED = "#9AA5B1";
 const SANS = "'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
 const MONO = "'JetBrains Mono', 'SF Mono', Consolas, monospace";
 
-const Tile = ({ icon: Icon, title, value, sub }) => (
+// RL status colours: Pending = amber, Approved = green
+const rlColor = (s) =>
+  String(s || "").trim().toLowerCase() === "approved" ? "#22C55E" : "#F59E0B";
+
+/** true while the viewport is at most `max` px wide */
+function useIsMobile(max = 640) {
+  const query = `(max-width: ${max}px)`;
+  const [match, setMatch] = useState(
+    () => typeof window !== "undefined" && window.matchMedia(query).matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const on = () => setMatch(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, [query]);
+  return match;
+}
+
+const Tile = ({ icon: Icon, title, value, sub, color }) => (
   <div
     style={{
       flex: 1,
       minWidth: 105,
-      background: "rgba(255, 255, 255, 0.03)",
-      border: `1px solid ${HAIR}`,
+      background: color ? `${color}14` : "rgba(255, 255, 255, 0.03)",
+      border: `1px solid ${color ? `${color}55` : HAIR}`,
       borderRadius: 12,
       padding: "12px 13px",
       display: "flex",
@@ -163,7 +591,7 @@ const Tile = ({ icon: Icon, title, value, sub }) => (
         color: MUTED,
       }}
     >
-      {Icon && <Icon size={12} color={ACCENT} />}
+      {Icon && <Icon size={12} color={color || ACCENT} />}
       {title}
     </div>
     <div
@@ -171,7 +599,7 @@ const Tile = ({ icon: Icon, title, value, sub }) => (
         fontFamily: MONO,
         fontSize: 15,
         fontWeight: 700,
-        color: INK,
+        color: color || INK,
       }}
     >
       {value}
@@ -187,7 +615,16 @@ const Tile = ({ icon: Icon, title, value, sub }) => (
 export default function PlotViewSheet({ plot, mapId, mapName, user, onClose }) {
   const nav = useNavigate();
   const c = statusColor(plot.status);
-console.log(plot)
+  const isMobile = useIsMobile();
+  const [expanded, setExpanded] = useState(false);
+
+  // a newly selected plot always opens compact again on mobile
+  useEffect(() => {
+    setExpanded(false);
+  }, [plot.srNo, plot.plotNo, plot.title]);
+
+  const compact = isMobile && !expanded;
+
   return (
     <div
       role="dialog"
@@ -231,17 +668,20 @@ console.log(plot)
         }
       `}</style>
 
-      {/* Header */}
+      {/* Header — on mobile the whole compact bar is tappable to expand */}
       <div
+        onClick={compact ? () => setExpanded(true) : undefined}
         style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "flex-start",
-          padding: "16px 18px 14px",
-          borderBottom: `1px solid ${HAIR}`,
+          alignItems: compact ? "center" : "flex-start",
+          gap: 10,
+          padding: compact ? "12px 14px" : "16px 18px 14px",
+          borderBottom: compact ? "none" : `1px solid ${HAIR}`,
+          cursor: compact ? "pointer" : "default",
         }}
       >
-        <div>
+        <div style={{ minWidth: 0 }}>
           <div
             style={{
               fontFamily: MONO,
@@ -250,7 +690,7 @@ console.log(plot)
               letterSpacing: "0.08em",
               textTransform: "uppercase",
               color: ACCENT,
-              marginBottom: 4,
+              marginBottom: compact ? 2 : 4,
             }}
           >
             {capitalize(plot.type)}
@@ -258,17 +698,27 @@ console.log(plot)
           <h3
             style={{
               margin: 0,
-              fontSize: 20,
+              fontSize: compact ? 17 : 20,
               fontWeight: 800,
               letterSpacing: "-0.02em",
               color: INK,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
           >
             {plot.type === "plot" ? `Plot ${plot.plotNo}` : plot.title}
           </h3>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            flexShrink: 0,
+          }}
+        >
           {plot.status && (
             <span
               style={{
@@ -287,8 +737,39 @@ console.log(plot)
               {plot.status}
             </span>
           )}
+
+          {/* Expand / collapse arrow (mobile only) */}
+          {isMobile && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpanded((v) => !v);
+              }}
+              aria-label={expanded ? "Collapse details" : "Expand details"}
+              aria-expanded={expanded}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                background: "rgba(212, 175, 55, 0.12)",
+                border: `1px solid rgba(212, 175, 55, 0.35)`,
+                color: ACCENT,
+                display: "grid",
+                placeItems: "center",
+                cursor: "pointer",
+              }}
+            >
+              {expanded ? <ChevronDown size={17} /> : <ChevronUp size={17} />}
+            </button>
+          )}
+
           <button
-            onClick={onClose}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation(); // don't expand the bar when closing
+              onClose();
+            }}
             aria-label="Close"
             style={{
               width: 32,
@@ -307,209 +788,203 @@ console.log(plot)
         </div>
       </div>
 
-      {/* Body */}
-      <div
-        style={{
-          padding: "16px 18px",
-          overflowY: "auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: 14,
-        }}
-      >
-        {/* Key Metric Tiles */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-          <Tile
-            icon={Maximize2}
-            title="Area"
-            value={`${plot.area.toFixed(0)} sq.m`}
-            sub={`${plot.areaSqFt.toFixed(0)} sq.ft`}
-          />
-          <Tile
-            title="Dimensions"
-            value={plot.dimensions || "Standard"}
-          />
-          <Tile
-            icon={Compass}
-            title="Facing"
-            value={plot.facing || "—"}
-          />
-        </div>
-           <Tile
-            icon={Compass}
-            title="Facing"
-            value={plot.facing || "—"}
-          />
-          {plot.type === "plot" && (
-            <Tile
-              icon={ShieldCheck}
-              title="RL Status"
-              value={plot.rlStatus || "—"}
-            />
-          )}
-        {/* Center Coordinates */}
-        <div
-          style={{
-            background: "rgba(255, 255, 255, 0.025)",
-            border: `1px solid ${HAIR}`,
-            borderRadius: 11,
-            padding: "11px 13px",
-            fontSize: 12.5,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 10,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <MapPin size={15} color={ACCENT} />
-            <span style={{ color: MUTED, fontWeight: 600 }}>
-              Center Coordinates
-            </span>
-          </div>
-          <span style={{ fontFamily: MONO, fontSize: 11.5, color: INK }}>
-            {plot.center.lat.toFixed(6)}, {plot.center.lng.toFixed(6)}
-          </span>
-        </div>
-
-        {/* Notes */}
-        {plot.notes && (
+      {!compact && (
+        <>
+          {/* Body */}
           <div
             style={{
-              background: "rgba(212, 175, 55, 0.10)",
-              border: `1px solid rgba(212, 175, 55, 0.35)`,
-              padding: "12px 14px",
-              borderRadius: 11,
-              fontSize: 13,
-              color: INK,
+              padding: "16px 18px",
+              overflowY: "auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: 14,
             }}
           >
+            {/* Key Metric Tiles */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              <Tile
+                icon={Maximize2}
+                title="Area"
+                value={`${plot.area.toFixed(0)} sq.m`}
+                sub={`${plot.areaSqFt.toFixed(0)} sq.ft`}
+              />
+              <Tile title="Dimensions" value={plot.dimensions || "Standard"} />
+              <Tile icon={Compass} title="Facing" value={plot.facing || "—"} />
+              {plot.type === "plot" && plot.rlStatus && (
+                <Tile
+                  icon={ShieldCheck}
+                  title="RL Status"
+                  value={plot.rlStatus}
+                  color={rlColor(plot.rlStatus)}
+                />
+              )}
+            </div>
+
+            {/* Center Coordinates */}
             <div
               style={{
+                background: "rgba(255, 255, 255, 0.025)",
+                border: `1px solid ${HAIR}`,
+                borderRadius: 11,
+                padding: "11px 13px",
+                fontSize: 12.5,
                 display: "flex",
                 alignItems: "center",
-                gap: 6,
-                fontSize: 11,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-                color: ACCENT,
-                marginBottom: 4,
+                justifyContent: "space-between",
+                gap: 10,
               }}
             >
-              <StickyNote size={13} /> Notes
-            </div>
-            {plot.notes}
-          </div>
-        )}
-
-        {/* Collapsible Corner Coordinates */}
-        <details
-          style={{
-            background: "rgba(255, 255, 255, 0.02)",
-            border: `1px solid ${HAIR}`,
-            borderRadius: 11,
-            padding: "10px 13px",
-          }}
-        >
-          <summary
-            style={{
-              cursor: "pointer",
-              fontWeight: 600,
-              fontSize: 12.5,
-              color: MUTED,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              listStyle: "none",
-            }}
-          >
-            <span>Corner Points ({plot.corners.length})</span>
-            <ChevronDown size={14} />
-          </summary>
-          <div
-            style={{
-              marginTop: 10,
-              paddingTop: 8,
-              borderTop: `1px solid ${HAIR}`,
-              display: "grid",
-              gap: 5,
-              maxHeight: 130,
-              overflowY: "auto",
-            }}
-          >
-            {plot.corners.map((p, i) => (
-              <div
-                key={i}
-                style={{
-                  fontFamily: MONO,
-                  fontSize: 11.5,
-                  color: MUTED,
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span style={{ color: ACCENT }}>#{i + 1}</span>
-                <span>
-                  Lat: {p.lat.toFixed(6)} · Lng: {p.lng.toFixed(6)}
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <MapPin size={15} color={ACCENT} />
+                <span style={{ color: MUTED, fontWeight: 600 }}>
+                  Center Coordinates
                 </span>
               </div>
-            ))}
+              <span style={{ fontFamily: MONO, fontSize: 11.5, color: INK }}>
+                {plot.center.lat.toFixed(6)}, {plot.center.lng.toFixed(6)}
+              </span>
+            </div>
+
+            {/* Notes */}
+            {plot.notes && (
+              <div
+                style={{
+                  background: "rgba(212, 175, 55, 0.10)",
+                  border: `1px solid rgba(212, 175, 55, 0.35)`,
+                  padding: "12px 14px",
+                  borderRadius: 11,
+                  fontSize: 13,
+                  color: INK,
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    fontSize: 11,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    color: ACCENT,
+                    marginBottom: 4,
+                  }}
+                >
+                  <StickyNote size={13} /> Notes
+                </div>
+                {plot.notes}
+              </div>
+            )}
+
+            {/* Collapsible Corner Coordinates */}
+            <details
+              style={{
+                background: "rgba(255, 255, 255, 0.02)",
+                border: `1px solid ${HAIR}`,
+                borderRadius: 11,
+                padding: "10px 13px",
+              }}
+            >
+              <summary
+                style={{
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  fontSize: 12.5,
+                  color: MUTED,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  listStyle: "none",
+                }}
+              >
+                <span>Corner Points ({plot.corners.length})</span>
+                <ChevronDown size={14} />
+              </summary>
+              <div
+                style={{
+                  marginTop: 10,
+                  paddingTop: 8,
+                  borderTop: `1px solid ${HAIR}`,
+                  display: "grid",
+                  gap: 5,
+                  maxHeight: 130,
+                  overflowY: "auto",
+                }}
+              >
+                {plot.corners.map((p, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      fontFamily: MONO,
+                      fontSize: 11.5,
+                      color: MUTED,
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span style={{ color: ACCENT }}>#{i + 1}</span>
+                    <span>
+                      Lat: {p.lat.toFixed(6)} · Lng: {p.lng.toFixed(6)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </details>
           </div>
-        </details>
-      </div>
 
-      {/* Footer Actions */}
-      <div
-        style={{
-          display: "flex",
-          gap: 10,
-          padding: "12px 18px 16px",
-          borderTop: `1px solid ${HAIR}`,
-        }}
-      >
-        <button
-          type="button"
-          onClick={onClose}
-          style={{
-            flex: 1,
-            font: `500 13px/1 ${MONO}`,
-            color: INK,
-            background: "transparent",
-            border: `1px solid ${HAIR}`,
-            borderRadius: 10,
-            padding: "12px 14px",
-            cursor: "pointer",
-          }}
-        >
-          Close
-        </button>
-
-        {plot.type === "plot" && !isGuest(user) && (
-          <button
-            type="button"
-            onClick={() =>
-              nav("/quotations/new", { state: { plot, mapId, mapName } })
-            }
+          {/* Footer Actions */}
+          <div
             style={{
-              flex: 1.8,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              font: `600 13px/1 ${MONO}`,
-              color: "#15181D",
-              background: ACCENT,
-              border: `1px solid ${ACCENT}`,
-              borderRadius: 10,
-              padding: "12px 16px",
-              cursor: "pointer",
+              display: "flex",
+              gap: 10,
+              padding: "12px 18px 16px",
+              borderTop: `1px solid ${HAIR}`,
             }}
           >
-            <FileText size={15} /> Generate Quotation
-          </button>
-        )}
-      </div>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                flex: 1,
+                font: `500 13px/1 ${MONO}`,
+                color: INK,
+                background: "transparent",
+                border: `1px solid ${HAIR}`,
+                borderRadius: 10,
+                padding: "12px 14px",
+                cursor: "pointer",
+              }}
+            >
+              Close
+            </button>
+
+            {plot.type === "plot" && !isGuest(user) && (
+              <button
+                type="button"
+                onClick={() =>
+                  nav("/quotations/new", { state: { plot, mapId, mapName } })
+                }
+                style={{
+                  flex: 1.8,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  font: `600 13px/1 ${MONO}`,
+                  color: "#15181D",
+                  background: ACCENT,
+                  border: `1px solid ${ACCENT}`,
+                  borderRadius: 10,
+                  padding: "12px 16px",
+                  cursor: "pointer",
+                }}
+              >
+                <FileText size={15} /> Generate Quotation
+              </button>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
