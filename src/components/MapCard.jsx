@@ -386,7 +386,7 @@ export default function MapCard({ map, index = 0, onOpen }) {
               setShowBrochure(true);
             }}
           >
-            <Eye size={16} /> View Brochure
+            <Eye size={16} /> View Documents
           </button>
         )}
       </article>

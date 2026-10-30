@@ -1,5 +1,3 @@
-
-
 // import React, {
 //   memo,
 //   useCallback,
@@ -1979,7 +1977,7 @@
 //           white-space: nowrap;
 //           box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
 //           transition: all 150ms ease;
-          
+
 //           /* ── Added Fixes for Mobile Overlap ── */
 //           display: inline-flex;
 //           align-items: center;
@@ -2268,7 +2266,7 @@
 //     <Download size={17} />
 //   </button>
 // )}
-    
+
 //             {isAdmin(user) && (
 //               <button
 //                 className={`ref-icon-btn ${editMode ? "active" : ""}`}
@@ -3093,7 +3091,7 @@
 //                 <Share2 size={15} /> More…
 //               </button>
 //             )}
-            
+
 //           </div>
 //         </Modal>
 //       )}
@@ -3107,8 +3105,6 @@
 //     </div>
 //   );
 // }
-
-
 
 import React, {
   memo,
@@ -3852,10 +3848,7 @@ const SelectedDimensionOverlay = memo(function SelectedDimensionOverlay({
     const firstMainIdx = rawSegs.findIndex((s) => !s.isCurvePart);
     const orderedSegs =
       firstMainIdx > 0
-        ? [
-            ...rawSegs.slice(firstMainIdx),
-            ...rawSegs.slice(0, firstMainIdx),
-          ]
+        ? [...rawSegs.slice(firstMainIdx), ...rawSegs.slice(0, firstMainIdx)]
         : rawSegs;
 
     // 2. Merge consecutive short curve segments into a single arc group
@@ -3910,17 +3903,16 @@ const SelectedDimensionOverlay = memo(function SelectedDimensionOverlay({
       }
 
       // Offset each curve vertex outward so the dashed dimension line follows the curve smoothly
-      const arcPts = [
-        group[0].p1,
-        ...group.map((s) => s.p2),
-      ].map(([px, py]) => {
-        const vx = px - cx;
-        const vy = py - cy;
-        const vl = Math.hypot(vx, vy) || 1;
-        const onx = group.length > 1 ? vx / vl : nx;
-        const ony = group.length > 1 ? vy / vl : ny;
-        return [px + onx * off, py + ony * off];
-      });
+      const arcPts = [group[0].p1, ...group.map((s) => s.p2)].map(
+        ([px, py]) => {
+          const vx = px - cx;
+          const vy = py - cy;
+          const vl = Math.hypot(vx, vy) || 1;
+          const onx = group.length > 1 ? vx / vl : nx;
+          const ony = group.length > 1 ? vy / vl : ny;
+          return [px + onx * off, py + ony * off];
+        },
+      );
 
       const a = arcPts[0];
       const b = arcPts[arcPts.length - 1];
@@ -4371,10 +4363,10 @@ export default function MapViewer({ publicView = false }) {
 
   const brochure = useMemo(() => getBrochure(mapDoc), [mapDoc]);
 
-const closeBrochurePreview = useCallback(
-  () => setShowBrochurePreview(false),
-  [],
-);
+  const closeBrochurePreview = useCallback(
+    () => setShowBrochurePreview(false),
+    [],
+  );
 
   const statuses = useMemo(
     () =>
@@ -5372,18 +5364,27 @@ const closeBrochurePreview = useCallback(
             >
               <Info size={17} />
             </button>
-     {brochure && (
-  <button
-    className="ref-icon-btn"
-    type="button"
-    title="View brochure PDF"
-    aria-label="View brochure PDF"
-    onClick={() => setShowBrochurePreview(true)}
-  >
-    <Download size={17} />
-  </button>
-)}
-    
+            <button
+              className="ref-icon-btn"
+              type="button"
+              title="Share layout"
+              aria-label="Share layout"
+              onClick={() => setShowShare(true)}
+            >
+              <Share2 size={17} />
+            </button>
+            {brochure && (
+              <button
+                className="ref-icon-btn"
+                type="button"
+                title="View brochure PDF"
+                aria-label="View brochure PDF"
+                onClick={() => setShowBrochurePreview(true)}
+              >
+                <Download size={17} />
+              </button>
+            )}
+
             {isAdmin(user) && (
               <button
                 className={`ref-icon-btn ${editMode ? "active" : ""}`}
@@ -5404,8 +5405,8 @@ const closeBrochurePreview = useCallback(
           {[
             ["all", `All (${plots.length})`],
             ["plot", `Plots (${count("plot")})`],
-            ["road", `Roads (${count("road")})`],
-            ["open_space", `Open Spaces (${count("open_space")})`],
+            ["road", `Roads `],
+            ["open_space", `Open Spaces`],
             ["amenity", "Amenities"],
           ].map(([k, l]) => (
             <button
@@ -5985,7 +5986,7 @@ const closeBrochurePreview = useCallback(
       )}
 
       {/* ── Bottom-Right Status toggle ── */}
-      <div
+      {/* <div
         className="mv-bottom-right-controls"
         style={{
           position: "absolute",
@@ -6050,7 +6051,7 @@ const closeBrochurePreview = useCallback(
             </button>
           ),
         )}
-      </div>
+      </div> */}
 
       {/* ── Selected Plot Inspector Sheet ── */}
       {selected && (
@@ -6211,17 +6212,16 @@ const closeBrochurePreview = useCallback(
                 <Share2 size={15} /> More…
               </button>
             )}
-            
           </div>
         </Modal>
       )}
       {showBrochurePreview && brochure && (
-  <BrochurePreview
-    brochure={brochure}
-    title={mapDoc?.name || "Layout brochure"}
-    onClose={closeBrochurePreview}
-  />
-)}
+        <BrochurePreview
+          brochure={brochure}
+          title={mapDoc?.name || "Layout brochure"}
+          onClose={closeBrochurePreview}
+        />
+      )}
     </div>
   );
 }
