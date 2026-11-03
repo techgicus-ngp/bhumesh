@@ -3292,7 +3292,7 @@ textarea {
 }
 
 /* =========================================================
-   Bhumesh Realtors â€” Responsive UI polish
+   Bhumesh Realtors Ã¢â‚¬â€ Responsive UI polish
    Appended overrides only. Existing selectors, behavior,
    component APIs, map viewer, and print rules are preserved.
    ========================================================= */
@@ -4394,7 +4394,7 @@ canvas {
 }
 
 /* =========================================================
-   Shared UI widgets â€” premium responsive polish
+   Shared UI widgets Ã¢â‚¬â€ premium responsive polish
    Kept in the main index.css as requested.
    ========================================================= */
 
@@ -4644,7 +4644,7 @@ canvas {
 
 
 /* =========================================================
-   Bhumesh Realtors — Full-Bleed Connected Hero & Workspace
+   Bhumesh Realtors â€” Full-Bleed Connected Hero & Workspace
    ========================================================= */
 
 .eh-page {
@@ -4929,7 +4929,7 @@ canvas {
   max-width: 52ch;
 }
 
-/* KPI Stat Cards — Crisp single-line numbers */
+/* KPI Stat Cards â€” Crisp single-line numbers */
 .eh-stats-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -5306,7 +5306,7 @@ canvas {
 
 /* =========================================================
    Maps tab, map cards and search field
-   (MapsTab.jsx · MapCard.jsx · ui.jsx)
+   (MapsTab.jsx Â· MapCard.jsx Â· ui.jsx)
 
    KEEP THIS BLOCK AT THE VERY END OF index.css. Every rule below is written to win the cascade
    on specificity (two-class selectors), and for equal specificity it relies on coming last.
@@ -5322,7 +5322,7 @@ canvas {
   --maps-blue-shadow: 0 6px 14px rgb(29 78 216 / 22%);
 }
 
-/* Search field: hide the browser's own clear (×); the component renders its own. */
+/* Search field: hide the browser's own clear (Ã—); the component renders its own. */
 .searchbar input[type="search"]::-webkit-search-cancel-button,
 .searchbar input[type="search"]::-webkit-search-decoration {
   display: none;
@@ -5330,7 +5330,7 @@ canvas {
   appearance: none;
 }
 
-/* ── Toolbar controls inside the Maps tab ── */
+/* â”€â”€ Toolbar controls inside the Maps tab â”€â”€ */
 .maps-tab .maps-filters {
   padding: 0 0 18px;
 }
@@ -5380,7 +5380,7 @@ canvas {
   animation: spin 1s linear infinite;
 }
 
-/* ── Map card (extends .card) ── */
+/* â”€â”€ Map card (extends .card) â”€â”€ */
 .map-card {
   display: flex;
   flex-direction: column;
@@ -5522,6 +5522,27 @@ canvas {
   .appbar-actions { gap: 2px; }
   .searchbar { border-radius: 12px; }
   .searchbar input { font-size: 16px; } /* stops iOS Safari zooming on focus */
+  .stat-pill { padding: 10px 8px; border-radius: 12px; }
+  .stat-pill span { font-size: 11px; }
+  .empty { padding: 34px 12px; }
+}
+@media (max-width: 380px) { .stat-pill b { font-size: 15px; } }
+@media (min-width: 600px)  { .plot-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .plot-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• Mobile fixes â€” keep this block at the END of the file â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+@media (max-width: 767px) {
+  /* iOS Safari zooms the whole page when a field smaller than 16px is focused */
+  input, select, textarea { font-size: 16px !important; }
+
+  /* responsive values that were being overridden by later desktop rules */
+  .appbar { gap: 6px; min-height: 54px; padding: 7px 10px; }
+  .appbar h1 { font-size: 16px; }
+  .appbar-actions { gap: 2px; }
+  .searchbar { border-radius: 12px; }
   .stat-pill { padding: 10px 8px; border-radius: 12px; }
   .stat-pill span { font-size: 11px; }
   .empty { padding: 34px 12px; }
