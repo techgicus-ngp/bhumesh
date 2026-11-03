@@ -8281,17 +8281,19 @@ export default function MapViewer({ publicView = false }) {
             padding: 5px 10px;
           }
 
-          /* ── Transform Legend into a Horizontal Bottom Bar ── */
+          /* ── Compact status legend on phones: small chip, kept above Google's logo/attribution ── */
           .mv-status-legend {
             left: 8px !important;
-            right: 8px !important;
-            bottom: 8px !important;
-            max-width: none !important;
-            width: calc(100vw - 16px) !important;
+            right: auto !important;
+            bottom: calc(26px + env(safe-area-inset-bottom)) !important;
+            width: auto !important;
+            max-width: calc(100vw - 16px) !important;
             flex-wrap: nowrap !important;
             overflow-x: auto !important;
-            padding: 8px 12px !important;
-            border-radius: 10px !important;
+            gap: 4px 10px !important;
+            padding: 4px 8px !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
           }
@@ -8299,12 +8301,20 @@ export default function MapViewer({ publicView = false }) {
             display: none;
           }
           .mv-status-item {
-            flex-shrink: 0; /* Keep items on one line */
-            gap: 5px !important;
+            flex-shrink: 0; /* keep each item on one line */
+            gap: 4px !important;
           }
-          .mv-status-legend {
-            gap: 6px 14px !important;
-            padding: 6px 10px !important;
+          .mv-status-dot {
+            width: 9px !important;
+            height: 9px !important;
+          }
+          .mv-status-label {
+            font-size: 10.5px !important;
+          }
+          .mv-status-count {
+            font-size: 9.5px !important;
+            padding: 2px 5px !important;
+            border-radius: 4px !important;
           }
 
           /* ── Nudge Bottom-Right Toggles & Zoom Controls Up ── */
@@ -9099,6 +9109,7 @@ export default function MapViewer({ publicView = false }) {
               style={{ display: "flex", alignItems: "center", gap: 7 }}
             >
               <span
+                className="mv-status-dot"
                 style={{
                   width: 12,
                   height: 12,
@@ -9109,6 +9120,7 @@ export default function MapViewer({ publicView = false }) {
                 }}
               />
               <span
+                className="mv-status-label"
                 style={{
                   font: `500 12px/1 ${MONO}`,
                   color: INK,
@@ -9119,6 +9131,7 @@ export default function MapViewer({ publicView = false }) {
               </span>
               {cnt !== null && cnt > 0 && (
                 <span
+                  className="mv-status-count"
                   style={{
                     font: `500 11px/1 ${MONO}`,
                     color: MUTED,
