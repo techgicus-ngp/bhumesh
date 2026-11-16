@@ -1184,6 +1184,7 @@
 //   const mapRef = useRef(null);
 //   const flyRafRef = useRef(0);
 //   const initialFitDoneRef = useRef(false);
+//   const userMovedRef = useRef(false); // true once the user pans / zooms by hand
 //   const overlayPortalRef = useRef(null);
 //   const compassNeedleRef = useRef(null);
 //   const [, setOverlayReady] = useState(0);
@@ -1227,6 +1228,7 @@
 
 //   useEffect(() => {
 //     initialFitDoneRef.current = false;
+//     userMovedRef.current = false;
 //     getMap(mapId)
 //       .then((m) => {
 //         if (!m) return;
@@ -1505,7 +1507,7 @@
 
 //     m.setOptions({ isFractionalZoomEnabled: true, maxZoom: MAP_MAX_Z });
 //     if (typeof m.moveCamera === "function") {
-//       m.moveCamera({ center: target, zoom });
+//       m.moveCamera({ center: target, zoom, tilt: 0, heading: 0 });
 //     } else {
 //       m.setCenter(target);
 //       m.setZoom(zoom);
@@ -1662,7 +1664,12 @@
 //   const onLoad = useCallback(
 //     (m) => {
 //       mapRef.current = m;
-//       m.setOptions({ isFractionalZoomEnabled: true, maxZoom: MAP_MAX_Z });
+//       m.setOptions({
+//         isFractionalZoomEnabled: true,
+//         maxZoom: MAP_MAX_Z,
+//         tilt: 0,
+//         heading: 0,
+//       });
 //       attachOverlay(m);
 //       setMapReady(true); // triggers the one-time initial fit once the layout is also ready
 //     },
@@ -1696,6 +1703,44 @@
 //       }
 //     };
 //   }, [isLoaded, mapReady, layout, attachOverlay, fitAll]);
+
+//   /* Foldables, split-screen and rotation change the container size WITHOUT reloading the page.
+//      Tell Google Maps, redraw the plot overlay, and re-frame the layout if the user hasn't
+//      started moving the map yet. */
+//   useEffect(() => {
+//     const m = mapRef.current;
+//     const el = m?.getDiv?.();
+//     if (!isLoaded || !mapReady || !el || typeof ResizeObserver === "undefined") {
+//       return undefined;
+//     }
+//     const markMoved = () => {
+//       userMovedRef.current = true;
+//     };
+//     el.addEventListener("pointerdown", markMoved, { passive: true });
+//     el.addEventListener("wheel", markMoved, { passive: true });
+
+//     let raf = 0;
+//     let first = true;
+//     const ro = new ResizeObserver(() => {
+//       if (first) {
+//         first = false; // the initial callback is not a real resize
+//         return;
+//       }
+//       cancelAnimationFrame(raf);
+//       raf = requestAnimationFrame(() => {
+//         window.google?.maps?.event?.trigger(m, "resize");
+//         overlayPortalRef.current?.overlay?.draw?.();
+//         if (!userMovedRef.current) fitAll();
+//       });
+//     });
+//     ro.observe(el);
+//     return () => {
+//       ro.disconnect();
+//       cancelAnimationFrame(raf);
+//       el.removeEventListener("pointerdown", markMoved);
+//       el.removeEventListener("wheel", markMoved);
+//     };
+//   }, [isLoaded, mapReady, fitAll]);
 
 //   const onIdle = useCallback(() => {
 //     const m = mapRef.current;
@@ -2107,6 +2152,8 @@
 //         onIdle={onIdle}
 //         options={{
 //           mapTypeId: "hybrid",
+//           tilt: 0, // always overhead: the flat SVG plot layer can't follow oblique 45° imagery
+//           heading: 0,
 //           isFractionalZoomEnabled: true,
 //           streetViewControl: false,
 //           fullscreenControl: false,
@@ -3168,6 +3215,8 @@
 
 
 
+
+
 import React, {
   memo,
   useCallback,
@@ -4197,6 +4246,7 @@ const MasterplanSvgContent = memo(function MasterplanSvgContent({
           if (editingKey && f.key === editingKey) return null;
           const isSel = highlightKey === f.key;
           const isRoad = f.raw.type === "road";
+          const clickable = f.raw.type === "plot"; // only plots are clickable
           const st = styleForFeature(f.raw);
           // Roads stay 100% opaque so they blend seamlessly with the background
           const baseAlpha = isRoad ? 1 : highlightKey && !isSel ? 0.52 : 0.96;
@@ -4213,7 +4263,9 @@ const MasterplanSvgContent = memo(function MasterplanSvgContent({
               stroke={isSel ? SELECTED_STROKE : st.stroke}
               strokeWidth={isSel ? 0.55 : st.sw}
               strokeOpacity={isRoad ? 0 : alpha < 0.4 ? 0.35 : 0.95}
+              style={clickable ? undefined : { pointerEvents: "none" }}
               onClick={(e) => {
+                if (!clickable) return;
                 e.stopPropagation();
                 onPlotClick(f.raw);
               }}
