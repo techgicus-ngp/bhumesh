@@ -7,5 +7,6 @@ export const GOOGLE_MAPS_DOC_IDS = [
   "qgq4RdXf8pQq76TMqPEg",
   "odRA82vEYZkJg6jTJJS9",
   "MQ4cTIlHqx2wbcL0veaJ",
+  "LMoIQlOhHyKGEvHcByab",
 ];
 export const isGoogleMapDoc = (id) => GOOGLE_MAPS_DOC_IDS.includes(id);
