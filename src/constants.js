@@ -5,6 +5,6 @@
 export const GOOGLE_MAPS_DOC_IDS = [
   "5piN2m5H5Jmjleod5YSe",        // paste each full doc ID
   "qgq4RdXf8pQq76TMqPEg",
-  ,
+  "odRA82vEYZkJg6jTJJS9",
 ];
 export const isGoogleMapDoc = (id) => GOOGLE_MAPS_DOC_IDS.includes(id);
