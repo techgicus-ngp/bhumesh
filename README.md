@@ -36,3 +36,23 @@ Same composite-index queries as the Flutter app (`createdByUid`+`quotationDate`,
 
 ## Security — please read
 Carried over unchanged from the Flutter code: passwords are stored in plain text in the `users` collection and checked client-side, and the default admin/guest credentials are hard-coded in `authService.js`. Anyone who can read your Firestore rules can read every password. Before going live, move to Firebase Authentication + role-based Firestore security rules and remove the hard-coded accounts.
+
+## Plot-status push notifications
+Flow: any tool changes `maps/*` plot status → Cloud Function (`functions/index.js`) → FCM → every device in `fcmTokens` with `role` of employee or admin.
+Employee devices register on login (`src/services/pushService.js`) and are removed on logout.
+
+One-time setup
+1. Firebase console → Project settings → Cloud Messaging → Web Push certificates → Generate key pair → put it in `.env` and Vercel as `VITE_FIREBASE_VAPID_KEY`.
+2. Upgrade the Firebase project to Blaze (Cloud Functions requirement; free quota is ample for this usage).
+3. `npm i -g firebase-tools && firebase login && firebase use <projectId>`
+4. `cd functions && npm install && cd ..`
+5. `firebase deploy --only functions` (it asks for `SITE_URL`, e.g. https://your-app.vercel.app)
+6. Firestore rules must let the web app write `fcmTokens/{token}` (same openness as `users`).
+7. Redeploy the web app on Vercel.
+iPhone/iPad: web push only works after "Add to Home Screen" (iOS 16.4+).
+
+### No-server mode (default)
+`src/services/plotStatusWatcher.js` listens to Firestore `maps` while the app is open (tab may be in background) and shows a toast
+(tab visible) or a system notification (tab hidden/minimized). It works on localhost with no deployment.
+It cannot notify when the browser/app is fully closed — deploy the Cloud Function for that, then set
+`VITE_DISABLE_LOCAL_WATCHER=true` so users don't get duplicate notifications.

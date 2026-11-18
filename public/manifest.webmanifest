@@ -1,0 +1,9 @@
+{
+  "name": "Bhumesh Realtors",
+  "short_name": "Bhumesh",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b2540",
+  "theme_color": "#0b2540",
+  "icons": [{ "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }]
+}
